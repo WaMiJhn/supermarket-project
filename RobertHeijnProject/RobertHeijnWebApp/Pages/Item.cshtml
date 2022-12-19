@@ -1,0 +1,31 @@
+﻿@page
+@model RobertHeijnWebApp.Pages.ItemModel
+@{
+	if (User.Identity.IsAuthenticated)
+	{
+		Layout = "_LoggedInLayout";
+	}
+
+}
+<section id="itemdetails">
+	<div class="item-image">
+		<img src="@Model.Item.ImageSource" id="main-img"/>
+	</div>
+	<div class="item-descr">
+		<h6>@Model.Category.Name</h6>
+		<h4>@Model.Item.Name</h4>
+		<h2>€@Model.Item.Price</h2>
+		<form method="post">
+			<input asp-for="Quantity" type="number" min="1" max="99" value="1" />
+			<input type="submit" value="Add to cart">
+			@if (TempData["SuccessMsg"] != null)
+			{
+				<div class="successmsg">
+					@TempData["SuccessMsg"]
+				</div>
+			}
+		</form>
+		<h4>Product details</h4>
+		<span>@Model.Item.Name can be bought for €@Model.Item.Price per @Model.Unit.Name</span>
+	</div>
+</section>

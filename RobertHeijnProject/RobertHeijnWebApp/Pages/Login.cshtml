@@ -1,0 +1,25 @@
+﻿@page
+@model RobertHeijnWebApp.Pages.LoginModel
+@{
+}
+<section id="loginbody">
+	<div class="center">
+		<h1>Login</h1>
+		<form method="post">
+			<div class="txt-field">
+				<input asp-for="Username" type="text" required/>
+				<span asp-validation-for="Username"></span>
+				<label>Username</label>
+			</div>
+			<div class="txt-field">
+				<input asp-for="Password" type="password" required/>
+				<span asp-validation-for="Password"></span>
+				<label>Password</label>
+			</div>
+			<input type="submit" value="Login"/>
+			<div class="register">
+				Not a member yet? <a asp-page="Register">Signup</a>
+			</div>
+		</form>
+	</div>
+</section>

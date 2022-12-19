@@ -1,0 +1,131 @@
+﻿@page
+@using Newtonsoft.Json;
+@using RhClassLibrary.Classes;
+@model RobertHeijnWebApp.Pages.CheckoutModel
+@{
+	bool isLoggedIn = User.Identity.IsAuthenticated;
+	if (User.Identity.IsAuthenticated)
+	{
+		Layout = "_LoggedInLayout";
+	}
+	if (!@Model.ValidShoppingCart)
+	{
+		<script>alert('@TempData.Peek("Message")');
+				window.location.href = '/Cart';
+		</script>
+	}
+	@if (TempData["Error"] != null)
+	{
+	<script>alert('@TempData["Error"]');
+		</script>
+		@TempData.Remove("Error");
+	}
+}
+<section id="checkout">
+	<form method="post" class="checkoutform" asp-page-handler="CheckOut">
+		<div class="row">
+			<div class="col">
+				<h3 class="title">Address</h3>
+				<div class="input">
+					<span>Full name: </span>
+					@{
+						if (isLoggedIn)
+						{ <input type="text" value="@Model.loggedIn.FirstName @Model.loggedIn.LastName" required/> }
+						else
+						{ <input type="text" required/> }
+					}
+				</div>
+				<div class="input">
+					<span>Email:</span>
+					@{
+						if (isLoggedIn)
+						{ <input type="text" value="@Model.loggedIn.Account.Email"> }
+						else
+						{
+							<input type="text" required />
+						}
+					}
+				</div>
+				<div class="input">
+					<span>Street: </span>
+					@{
+						if (isLoggedIn)
+						{ <input type="text" value="@Model.loggedIn.Address.Street"  required/> }
+						else
+						{ <input type="text"  required/> }
+					}
+				</div>
+				<div class="input">
+					<span>House number: </span>
+					@{
+					if (isLoggedIn)
+					{ <input type="text" value="@Model.loggedIn.Address.Housenumber" required/> }
+					else
+					{ <input type="text" required/> }
+					}
+				</div>
+				<div class="input">
+					<span>Zipcode: </span>
+					@{
+					if (isLoggedIn)
+					{ <input type="text" value="@Model.loggedIn.Address.Zipcode" required/> }
+					else
+					{ <input type="text" required/> }
+					}
+				</div>
+			</div>
+			<div class="col">
+				<h3 class="title">Delivery Option</h3>
+				<div class="input">
+					<span>Choose delivery option:</span>
+					<select name="DeliveryOption" id="deliveryoption">
+						<option selected disabled hidden style='display: none' value=''></option>
+						<option value="pickup">Pick up delivery</option>
+						<option value="home">Home delivery</option>
+					</select>
+				</div>
+				<div class="input" id="pickupdelivery">
+					<div class="location">
+						<span asp-validation-for="Location">Preferred location:</span>
+						<input asp-for="Location" type="text" />
+					</div>
+					<div class="input">
+						<span>Select date:</span>
+						<input type="date" required name="inputDatePickup"/>
+					</div>
+					<div class="input">
+						<span>Select time:</span>
+						<input type="time" step="1800" min="08:00" max="22:00" required name="inputTimePickup"/>
+					</div>
+				</div>
+				<div id="homedelivery">
+					<div class="input">
+						<span>Select date:</span>
+						<input type="date" required name="inputDateHome"/>
+					</div>
+					<div class="input">
+						<span>Select time:</span>
+						<input type="time" step="900" min="09:00" max="21:00" required name="inputTimeHome"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		@{
+			decimal sum = 0;
+			@if (Model.ShoppingCart != null)
+			{
+				foreach (KeyValuePair<int, int> value in Model.ShoppingCart)
+				{
+					sum += value.Value * Model.itemManager.FindItem(value.Key).Price;
+				}
+			}
+		}
+		<div class="total">Cart total: €@sum</div>
+		<input type="submit" value="Order" id="orderbtn"/>
+	</form>
+</section>
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="~/js/jqueryforrequiredcheckout.js"></script>
+	<script src="~/js/selectdeliveryoption.js"></script>
+}

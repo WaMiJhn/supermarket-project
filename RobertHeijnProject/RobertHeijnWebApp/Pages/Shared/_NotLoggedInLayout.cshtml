@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+	<link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <section id="header">
+		<a asp-page="Index" class="logo"><img src="~/img/logo-no-background.png" /></a>
+        <div>
+            <ul id="navbar">
+                <li><a asp-page="Index" class="nav-item active">Home</a></li>
+                <li><a asp-page="Shop" class="nav-item">Shop</a></li>
+                <li><a asp-page="Login">Log in</a></li>
+				<li><a asp-page="Cart"><img src="~/img/basket.png" /></a></li>
+                <i id="close" class="fa-solid fa-x"></i>
+            </ul>
+        </div>
+        <div id="smallnav">
+            <i id="bar" class="fas fa-outdent"></i>
+        </div>
+    </section>
+    <div class="renderbody">
+        @RenderBody()
+    </div>
+    <footer>
+        <div class="col">
+			<img src="~/img/logo-no-background.png" />
+        </div>
+        <div class="col">
+            <h3>Contact</h3>
+            <p><strong>Address: </strong> Rachelsmolen 1, 5612 MA Eindhoven</p>
+            <p><strong>Phone: </strong> +31 6 1234 5678 </p>
+            <p><strong>Email: </strong> 491606@student.fontys.nl</p>
+            <p><strong>Hours: </strong> 10:00 - 18:00, Mon - Sat</p>
+        </div>
+        <div class="col">
+            <h3>My Account</h3>
+            <a asp-page="Login">Log In</a>
+            <a asp-page="Cart">View Cart</a>
+        </div>
+        <div class="col">
+            <h3>Accepted Payment Options</h3>
+			<img src="~/img/payment.png" />
+        </div>
+        <div class="copyright">
+            <p>&copy; 2022, Robert Heijn Bv. </p>
+        </div>
+    </footer>
+    @RenderSection("Scripts", required: false)
+    <script src="~/js/navbarclick.js"></script>
+    <script src="https://kit.fontawesome.com/5410a1bd2e.js" crossorigin="anonymous"></script>
+</body>
+</html>

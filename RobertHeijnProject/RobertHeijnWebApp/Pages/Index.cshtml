@@ -1,0 +1,23 @@
+﻿@page
+@model IndexModel
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        Layout = "_LoggedInLayout";
+    }
+    if(TempData["CheckOut"] != null)
+    {
+        Response.WriteAsync(TempData["CheckOut"].ToString());
+    }
+    ViewData["Title"] = "Home page";
+}
+
+<section id="hero">
+    <div class="main">
+        <h4>Welcome to</h4> <h1>Robert Heijn</h1>
+        <h2>The go to place for all your groceries and goods.</h2>
+        <form method="post">
+			<input type="submit" value="Shop Now" />
+		</form>
+    </div>
+</section>

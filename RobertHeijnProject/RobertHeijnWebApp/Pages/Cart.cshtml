@@ -1,0 +1,87 @@
+﻿@page
+@using RhClassLibrary.Classes;
+@model RobertHeijnWebApp.Pages.CartModel
+@{
+	if (User.Identity.IsAuthenticated)
+	{
+		Layout = "_LoggedInLayout";
+	}
+}
+<section id="cart">
+	<table>
+		<thead>
+			<tr>
+				<td>Remove</td>
+				<td>Image</td>
+				<td>Product</td>
+				<td>Price</td>
+				<td>Quantity</td>
+				<td>Subtotal</td>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.ShoppingCart != null)
+			{
+				@foreach (KeyValuePair<int, int> value in Model.ShoppingCart)
+				{
+					Item found = Model.itemManager.FindItem(value.Key);
+					<tr>
+						<form method="post" asp-page-handler="RemoveItem" asp-route-id="@found.Id">
+							<td data-label="Remove item" class="remove-item"><button type="submit">Remove Item</button></td>
+						</form>
+						<td data-label="Image"><img src="@found.ImageSource" /></td>
+						<td data-label="Name">@found.Name</td>
+						<td data-label="Price">€@found.Price</td>
+						<td data-label="Quantity "class="quantity">
+							<div>
+								<form method="post" asp-page-handler="Decrement" asp-route-id="@found.Id">
+									<input type="submit" name="decrement" value="-">
+								</form>
+							</div>
+							<div>
+								@value.Value
+							</div>
+							<div>
+								<form method="post" asp-page-handler="Increment" asp-route-id="@found.Id">
+								<input type="submit" name="increment" value="+">
+							</form>
+							</div>
+						</td>
+						@{var Subtotal = found.Price * value.Value;}
+						<td data-label="Subtotal">@Subtotal</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+</section>
+<section id="cart-add">
+	<div id="total">
+		<h3>Cart total:</h3>
+		<table>
+			<tr>
+				<td><strong>Total</strong></td>
+				<td><strong>
+						@{
+							decimal sum = 0; 
+							@if (Model.ShoppingCart != null)
+							{
+								foreach (KeyValuePair<int, int> value in Model.ShoppingCart)
+								{
+								sum += value.Value * Model.itemManager.FindItem(value.Key).Price;
+								}	
+							}
+						}
+						€@sum
+				</strong></td>
+			</tr>
+		</table>
+		<form method="post" asp-page-handler="Checkout">
+			<input class="order-btn" type="submit" value="Proceed to checkout" />
+		</form>
+	</div>
+</section>
+
+@section Scripts {
+
+}
