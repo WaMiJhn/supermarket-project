@@ -2,7 +2,7 @@
   <br>
   <img src="https://i.pinimg.com/originals/51/72/f7/5172f710fb2eb5589229f0e0945e008a.jpg" alt="AH" width="150">
   <br>
-   Robert Heijn Project
+   Supermarket Project
 </h1>
 
 <h2>About the project</h2>
