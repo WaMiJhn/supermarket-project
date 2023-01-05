@@ -237,6 +237,139 @@ namespace RhDalLibrary.DAL
 			catch (Exception ex) { throw; }
 			finally { CloseConnection(); }
 		}
+		public int GetCountHomeDelivery(DateTime dateTime)
+		{
+			try
+			{
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@datetime", dateTime) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select count(*) from orderTbl as o " +
+						"inner join deliveryOptionTbl as d on o.DeliveryOptionId = d.id " +
+						"inner join homeDeliveryTbl as h on h.DeliveryOptionId = d.id " +
+						"where h.DeliverDateTime = @datetime", sp);
+					return Convert.ToInt32(cmd.ExecuteScalar());
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public Dictionary<int, int> GetItemsFromOrder(int orderid)
+		{
+			try
+			{
+				Dictionary<int, int> orderitems = new Dictionary<int, int>();
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@orderid", orderid) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select [OrderId], [ItemId], [ItemQuantity] from orderLineTbl " +
+						"where OrderId = @orderid", sp);
+					using (SqlDataReader dr = cmd.ExecuteReader())
+					{
+						while (dr.Read())
+						{
+							int itemid = Convert.ToInt32(dr["ItemId"]);
+							int itemquantity = Convert.ToInt32(dr["ItemQuantity"]);
+							orderitems.Add(itemid, itemquantity);
+						}
+					}
+					return orderitems;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public List<OrderDTO> GetAllPickupDeliveryOrdersFromCustomer(int customerid)
+		{
+			try
+			{
+				List<OrderDTO> orders = new List<OrderDTO>();
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@customerid", customerid) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select o.id, o.OrderDate, p.DeliveryOptionId, p.Location, p.PreferredTimeSlot, os.id as OrderStatusId, os.StatusName " +
+							"from orderTbl as o inner join deliveryOptionTbl as d on o.DeliveryOptionId = d.id " +
+							"inner join pickupDeliveryTbl as p on d.id = p.DeliveryOptionId " +
+							"inner join orderStatusTbl as os on os.id = o.OrderStatusId " +
+							"where o.CustomerId = @customerid", sp);
+					using (SqlDataReader dr = cmd.ExecuteReader())
+						{
+							while (dr.Read())
+							{
+								OrderStatusDTO orderStatus = new OrderStatusDTO
+								{
+									Id = Convert.ToInt32(dr["OrderStatusId"]),
+									Name = Convert.ToString(dr["StatusName"])
+								};
+								DeliveryOptionDTO deliveryOption = new PickupDeliveryDTO
+								{
+									Id = Convert.ToInt32(dr["DeliveryOptionId"]),
+									Location = Convert.ToString(dr["Location"]),
+									PreferredTimeSlot = Convert.ToDateTime(dr["PreferredTimeSlot"])
+								};
+								OrderDTO found = new OrderDTO();
+									found.Id = Convert.ToInt32(dr["id"]);
+									found.OrderDate = Convert.ToDateTime(dr["OrderDate"]);
+									found.OrderStatus = orderStatus;
+									found.DeliveryOption = deliveryOption;
+									orders.Add(found);
+							}
+						}
+						return orders;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public List<OrderDTO> GetAllHomeDeliveryOrdersFromCustomer(int customerid)
+		{
+			try
+			{
+				List<OrderDTO> orders = new List<OrderDTO>();
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@customerid", customerid) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select o.id, o.OrderDate, h.DeliveryOptionId, h.DeliverDateTime, os.id as OrderStatusId, os.StatusName " +
+							"from orderTbl as o inner join deliveryOptionTbl as d on o.DeliveryOptionId = d.id " +
+							"inner join homeDeliveryTbl as h on d.id = h.DeliveryOptionId " +
+							"inner join orderStatusTbl as os on os.id = o.OrderStatusId " +
+							"where o.CustomerId = @customerid", sp);
+					using (SqlDataReader dr = cmd.ExecuteReader())
+					{
+						while (dr.Read())
+						{
+							OrderStatusDTO orderStatus = new OrderStatusDTO
+							{
+								Id = Convert.ToInt32(dr["OrderStatusId"]),
+								Name = Convert.ToString(dr["StatusName"])
+							};
+							DeliveryOptionDTO deliveryOption = new HomeDeliveryDTO
+							{
+								Id = Convert.ToInt32(dr["DeliveryOptionId"]),
+								DeliverDateTime = Convert.ToDateTime(dr["DeliverDateTime"])
+							};
+							OrderDTO found = new OrderDTO();
+							found.Id = Convert.ToInt32(dr["id"]);
+							found.OrderDate = Convert.ToDateTime(dr["OrderDate"]);
+							found.OrderStatus = orderStatus;
+							found.DeliveryOption = deliveryOption;
+							orders.Add(found);
+						}
+					}
+					return orders;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
 		//update
 		public bool UpdateOrderStatus(int orderid, int orderstatusid)
 		{

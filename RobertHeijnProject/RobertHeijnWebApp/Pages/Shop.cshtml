@@ -7,21 +7,23 @@
 	}
 }
 <section id="items">
-	<h2>Items</h2>
 	<div class="item-container">
 		@foreach (var item in Model.Items)
 		{
-			<div class="item-card">
-				<a asp-page="Item" asp-route-id="@item.Id">
-					<img src="@item.ImageSource">
-					<div class="text">
-						<div class="description">
-						<h5>@item.Name</h5>
-						<h4> €@item.Price</h4>
+			if (item.Available)
+			{
+				<div class="item-card">
+					<a asp-page="Item" asp-route-id="@item.Id">
+						<img src="@item.ImageSource">
+						<div class="text">
+							<div class="description">
+								<h5>@item.Name</h5>
+								<h4> €@item.Price</h4>
+							</div>
 						</div>
-					</div>
-				</a>
-			</div>
+					</a>
+				</div>
+			}
 		}
 	</div>
 </section>

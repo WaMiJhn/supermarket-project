@@ -15,6 +15,7 @@ namespace RhDalLibrary.Interfaces
 		public CategoryDTO GetCategoryFromItem(int itemid);
 		public CategoryDTO FindCategory(int id);
 		public CategoryDTO FindParentCategory(int categoryid);
+		public bool CategoryNameCheck(string categoryname);
 		public DataTable GetCategoryDataTable(string search);
 		public bool UpdateCategory(int id, string categoryname, int? parentcategoryid);
 	}

@@ -9,6 +9,9 @@ namespace RhClassLibrary.Interfaces
 {
 	public interface ICustomerManager
 	{
+		public int CreateCustomer(string firstname, string lastname, int accountid);
+		public bool CreateAddress(string street, string housenumber, string zipcode, int personid);
 		public Customer GetCustomerById(int id);
+		public bool UpdateCustomer(int customerid, string firstname, string lastname, string street, string housenumber, string zipcode);
 	}
 }

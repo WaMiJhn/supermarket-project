@@ -27,17 +27,10 @@ namespace RobertHeijnDesktopApp
 			this.categoryManager = categoryManager;
 
 			this.LoadData();
-			this.LoadCombobox();
 		}
 		public void LoadData()
 		{
 			dgvItems.DataSource = itemManager.GetItemDataTable(tbSearch.Text);
-		}
-		private void LoadCombobox()
-		{
-			cbxFilter.DisplayMember = "Name";
-			cbxFilter.DataSource = categoryManager.GetAllCategories();
-			cbxFilter.SelectedIndex = -1;
 		}
 		private void btnAddItem_Click(object sender, EventArgs e)
 		{
@@ -53,23 +46,12 @@ namespace RobertHeijnDesktopApp
 					itemManager.FindItem(Convert.ToInt32(dgvItems.Rows[e.RowIndex].Cells[columnId].Value)), 
 					new CategoryManager(new CategoryDAL()),
 					new UnitManager(new UnitDAL())).ShowDialog();
-				
 			}
 		}
 
 		private void tbSearch_TextChanged(object sender, EventArgs e)
 		{
 			this.LoadData();
-		}
-
-		private void btnClearFilter_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void btnFilter_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

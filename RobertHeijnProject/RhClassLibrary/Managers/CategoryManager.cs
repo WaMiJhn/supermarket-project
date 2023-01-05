@@ -22,6 +22,10 @@ namespace RhClassLibrary.Managers
 		{
 			try
 			{
+				if(categoryDAL.CategoryNameCheck(name))
+				{
+					throw new Exception("Category with name " + name + " already exists, please choose a different one.");
+				}
 				if (parentCategory == null)
 				{
 					if (categoryDAL.CreateCategory(name, null))

@@ -18,21 +18,29 @@ namespace RhClassLibrary.Managers
 		{
 			this.accountDAL = accountDAL;
 		}
-		private string GenerateSalt()
+		public string GenerateSalt()
 		{
 			byte[] saltAsBytes = new byte[128];
 			RandomNumberGenerator.Create().GetBytes(saltAsBytes);
 			return Convert.ToBase64String(saltAsBytes);
 		}
-		private string HashPassword(string password)
+		public string HashPassword(string password)
 		{
 			var asByteArray = Encoding.UTF8.GetBytes(password);
 			return Convert.ToBase64String(SHA256.Create().ComputeHash(asByteArray));
 		}
-		public bool CreateAccount(string username, string password, string email)
+		public int CreateAccount(string username, string password, string email)
 		{
 			try
 			{
+				if(accountDAL.UsernameCheck(username))
+				{
+					throw new Exception("Username: " + username + " already exists, please choose a different one.");
+				}
+				else if(accountDAL.EmailCheck(email))
+				{
+					throw new Exception("Email: " + email + " already exists, please choose a different one.");
+				}
 				string salt = this.GenerateSalt();
 				string saltAndPass = string.Concat(password, salt);
 				string hashedPass = this.HashPassword(saltAndPass);
@@ -77,6 +85,14 @@ namespace RhClassLibrary.Managers
 			try
 			{
 				return new Account(accountDAL.GetAccountByUsername(username));
+			}
+			catch (Exception ex) { throw; }
+		}
+		public bool UpdateAccount(Account account, string username, string email)
+		{
+			try
+			{
+				return accountDAL.UpdateAccount(account.Id, username, email);
 			}
 			catch (Exception ex) { throw; }
 		}

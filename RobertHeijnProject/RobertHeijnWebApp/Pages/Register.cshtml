@@ -1,0 +1,61 @@
+﻿@page
+@model RobertHeijnWebApp.Pages.RegisterModel
+@{
+}
+<form method="post">
+	<section id="register">
+		<div class="registerform">
+			<div class="header">
+				<h2>Register</h2>
+			</div>
+			<div class="registerinput">
+				<div class="name">
+					<div class="firstname">
+						<label>First name:</label>
+						<input asp-for="FirstName" type="text" required />
+					</div>
+					<div class="lastname">
+						<label>Last name:</label>
+						<input asp-for ="LastName" type="text" required />
+					</div>
+				</div>
+				<div class="address">
+					<div class="street">
+						<label>Street:</label>
+						<input asp-for ="Street" type="text" required />
+					</div>
+					<div class="housenumber">
+						<label>House number:</label>
+						<input asp-for ="HouseNumber" type="text" title="Please submit a valid house number" pattern="^[1-9]\d*(?:[ -]?(?:[a-zA-Z]+|[1-9]\d*))?$" required />
+					</div>
+				</div>
+				<div class="input">
+					<label>Zipcode:</label>
+					<input asp-for="Zipcode" type="text" title="Please submit a valid zipcode" pattern="^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)([A-Z]{2}$|[a-z]{2}$)" required />
+				</div>
+				<div class="input">
+					<label>Username:</label>
+					<input asp-for ="Username" type="text" required />
+				</div>
+				<div class="input">
+					<label>Email:</label>
+					<input asp-for="Email" type="text" title="Please submit a valid email" pattern="[a-z0-9]+&#64;[a-z]+\.[a-z]{2,3}" required />
+				</div>
+				<div class="input">
+					<label>Password:</label>
+					<input asp-for ="Password" type="password" id="inputpass" required />
+				</div>
+				<div class="input">
+					<label>Confirm password:</label>
+					<input type="password" id="confirmpass" required />
+				</div>
+			</div>
+			<div class="button">
+				<button type="submit">Register	</button>
+			</div>
+		</div>
+	</section>
+</form>
+@section Scripts {
+	<script src="~/js/confirmpassword.js"></script>
+}

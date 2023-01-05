@@ -181,7 +181,7 @@
 			this.cbxOrderStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.cbxOrderStatus.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.cbxOrderStatus.FormattingEnabled = true;
-			this.cbxOrderStatus.Location = new System.Drawing.Point(162, 119);
+			this.cbxOrderStatus.Location = new System.Drawing.Point(172, 119);
 			this.cbxOrderStatus.Name = "cbxOrderStatus";
 			this.cbxOrderStatus.Size = new System.Drawing.Size(248, 25);
 			this.cbxOrderStatus.TabIndex = 13;

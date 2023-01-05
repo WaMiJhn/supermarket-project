@@ -13,7 +13,7 @@ namespace RhDalLibrary.DAL
 	public class AccountDAL : BaseDAL, IAccountDAL
 	{
 		//create
-		public bool CreateAccount(string username, string password, string salt, string email)
+		public int CreateAccount(string username, string password, string salt, string email)
 		{
 			try
 			{
@@ -25,11 +25,10 @@ namespace RhDalLibrary.DAL
 				if (OpenConnection())
 				{
 					SqlCommand cmd = CreateCommand("insert into accountTbl (Username, Password, Salt, Email) " +
-						"values (@username, @password, @salt, @email)", sp);
-					cmd.ExecuteNonQuery();
-					return true;
+						"values (@username, @password, @salt, @email); SELECT SCOPE_IDENTITY()", sp);
+					return Convert.ToInt32(cmd.ExecuteScalar());
 				}
-				else { return false; }
+				else { throw new Exception("Database connection could not be opened."); }
 			}
 			catch (Exception ex) { throw; }
 			finally { CloseConnection(); }
@@ -175,6 +174,60 @@ namespace RhDalLibrary.DAL
 						}
 						else { throw new Exception("Account with username " + username + " could not be found."); }
 					}
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public bool UsernameCheck(string username)
+		{
+			try
+			{
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@username", username) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select count(*) from accountTbl " +
+						"where Username = @username", sp);
+					return (int)cmd.ExecuteScalar() > 0;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public bool EmailCheck(string email)
+		{
+			try
+			{
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@email", email) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select count(*) from accountTbl " +
+						"where Email = @email", sp);
+					return (int)cmd.ExecuteScalar() > 0;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public bool UpdateAccount(int accountid, string username, string email)
+		{
+			try
+			{
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@accountid", accountid),
+					new SqlParameter("@username", username),
+					new SqlParameter("@email", email) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("update accountTbl set " +
+						"Username = @username, Email = @email where id = @accountid", sp);
+					cmd.ExecuteNonQuery();
+					return true;
 				}
 				else { throw new Exception("Database connection could not be opened."); }
 			}

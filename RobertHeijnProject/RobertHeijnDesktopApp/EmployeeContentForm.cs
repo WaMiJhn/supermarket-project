@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RhClassLibrary.Classes;
+using RhClassLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,9 +17,27 @@ namespace RobertHeijnDesktopApp
 	{
 		private bool drag = false;
 		private Point start = new Point(0, 0);
-		public EmployeeContentForm()
+		private Regex regexEmail; /*= new Regex("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}");*/
+		private Regex regexZipcode; /*= new Regex("^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)([A-Z]{2}$|[a-z]{2}$)");*/
+		private Regex regexHouseNumber; /*= new Regex("^[1-9]\\d*(?:[ -]?(?:[a-zA-Z]+|[1-9]\\d*))?$");*/
+
+        private readonly IEmployeeManager employeeManager;
+        private readonly IAccountManager accountManager;
+
+        public EmployeeContentForm(IEmployeeManager employeeManager, IAccountManager accountManager)
 		{
 			InitializeComponent();
+
+			this.employeeManager = employeeManager;
+			this.accountManager = accountManager;
+
+			this.LoadRegexes();
+		}
+		private void LoadRegexes()
+		{
+			regexEmail = new Regex(RegexInput.RegexEmail);
+			regexZipcode = new Regex(RegexInput.RegexZipcode);
+			regexHouseNumber = new Regex(RegexInput.RegexHouseNumber);
 		}
 		private void tbPassword_TextChanged(object sender, EventArgs e)
 		{
@@ -113,13 +133,41 @@ namespace RobertHeijnDesktopApp
 				{
 					throw new Exception("Please fill in all the information first.");
 				}
+				else if(!string.Equals(tbPassword.Text, tbPasswordConfirm.Text))
+				{
+					throw new Exception("Passwords don't match.");
+				}
+				else if (!regexEmail.IsMatch(tbEmail.Text))
+				{
+					throw new Exception("Please fill in a valid email.");
+				}
+				else if (!regexHouseNumber.IsMatch(tbHouseNumber.Text))
+				{
+					throw new Exception("Please fill in a valid house number.");
+				}
+				else if (!regexZipcode.IsMatch(tbZipcode.Text))
+				{
+					throw new Exception("Please fill in a valid zipcode.");
+				}
+				if (!employeeManager.CreateAddress(tbStreet.Text, tbHouseNumber.Text, tbZipcode.Text,
+					employeeManager.CreateEmployee(tbFirstName.Text, tbLastName.Text,
+					accountManager.CreateAccount(tbUsername.Text, tbPassword.Text, tbEmail.Text), numWage.Value)))
+				{
+					throw new Exception("Employee could not be added, please try again.");
+				}
+				else
+				{
+					MessageBox.Show("Employee successfully added.");
+					this.Close();
+				}
+
 			}
 			catch (Exception ex) { MessageBox.Show(ex.Message); }
 		}
 
 		private void tbEmail_TextChanged(object sender, EventArgs e)
 		{
-			if (!(new Regex("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")).IsMatch(tbEmail.Text) && !string.IsNullOrEmpty(tbEmail.Text))
+			if (!(regexEmail).IsMatch(tbEmail.Text) && !string.IsNullOrEmpty(tbEmail.Text))
 			{
 				lbEmailInvalid.Visible = true;
 			}
@@ -128,7 +176,7 @@ namespace RobertHeijnDesktopApp
 
 		private void tbZipcode_TextChanged(object sender, EventArgs e)
 		{
-			if (!(new Regex("^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)([A-Z]{2}$|[a-z]{2}$)").IsMatch(tbZipcode.Text)) && !string.IsNullOrEmpty(tbZipcode.Text))
+			if (!regexZipcode.IsMatch(tbZipcode.Text) && !string.IsNullOrEmpty(tbZipcode.Text))
 			{
 				lbZipcodeInavlid.Visible = true;
 			}
@@ -137,7 +185,7 @@ namespace RobertHeijnDesktopApp
 
 		private void tbHouseNumber_TextChanged(object sender, EventArgs e)
 		{
-			if(!(new Regex("^[0-9A-Za-z]+$").IsMatch(tbHouseNumber.Text)) && !string.IsNullOrEmpty(tbHouseNumber.Text))
+			if(!regexHouseNumber.IsMatch(tbHouseNumber.Text) && !string.IsNullOrEmpty(tbHouseNumber.Text))
 			{
 				lbInvalidHouseNumber.Visible = true;
 			}

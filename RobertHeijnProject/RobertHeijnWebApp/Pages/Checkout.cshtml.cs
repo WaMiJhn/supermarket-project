@@ -38,6 +38,13 @@ namespace RobertHeijnWebApp.Pages
 			else if (Request.Cookies.ContainsKey("shoppingcart"))
 			{
 				Dictionary<int, int> shoppingcart = JsonConvert.DeserializeObject<Dictionary<int, int>>(Request.Cookies["shoppingcart"]);
+				Object shoppingcartisvalid;
+				if (TempData.TryGetValue("shoppingcart", out shoppingcartisvalid))
+				{
+					ValidShoppingCart = (bool)shoppingcartisvalid;
+					TempData.Remove("shoppingcart");
+
+				}
 				if (shoppingcart.Count > 0)
 				{
 					ValidShoppingCart = true;
@@ -50,8 +57,8 @@ namespace RobertHeijnWebApp.Pages
         }
         public async Task<IActionResult> OnPostCheckOut()
 		{
-			//try
-			//{
+			try
+			{
 				int deliveryoptionid = -1;
 				string deliveryoption = Request.Form["DeliveryOption"];
 				Dictionary<int, int> shoppingcart = JsonConvert.DeserializeObject<Dictionary<int, int>>(Request.Cookies["shoppingcart"]);
@@ -82,12 +89,13 @@ namespace RobertHeijnWebApp.Pages
 				TempData["CheckOut"] = "Order was successfully placed!";
 				Response.Cookies.Delete("shoppingcart");
 				return RedirectToPage("/Index");
-			//}
-			//catch(Exception ex) 
-			//{
-			//	TempData["Error"] = ex.Message;
-			//	return RedirectToPage("/Checkout", ValidShoppingCart = true); 
-			//}
-        }
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = ex.Message;
+				TempData["shoppingcart"] = true;
+				return RedirectToPage("/Checkout");
+			}
+		}
     }
 }

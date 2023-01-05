@@ -1,5 +1,44 @@
 ﻿@page
+@using RhClassLibrary.Classes;
 @model RobertHeijnWebApp.Pages.OrdersModel
 @{
 	Layout = "_LoggedInLayout";
 }
+<section id="orders">
+	<div class="header">
+		<h2>Your orders</h2>
+	</div>
+	<div class="order-container">
+		@foreach(var order in Model.Orders)
+		{
+			<a asp-page="OrderDetails" asp-route-id="@order.Id">
+				<div class="order-card">
+					<div class="title">
+						<h3>Order number: #@order.Id</h3>
+					</div>
+					<div class="description">
+						<p> Order status: @order.OrderStatus.Name</p>
+						<p> Order date: @order.OrderDate.ToShortDateString()</p>
+						@{
+							if (order.DeliveryOption.GetType() == typeof(HomeDelivery))
+							{
+								<p>Delivery option: Home delivery</p>
+								HomeDelivery homeDelivery = (HomeDelivery)order.DeliveryOption;
+								<p>Deliver date: @homeDelivery.DeliverDateTime.ToShortDateString()</p>
+								<p>Deliver time: @homeDelivery.DeliverDateTime.ToShortTimeString()</p>
+							}
+							else if(order.DeliveryOption is PickupDelivery)
+							{
+								<p>Delivery option: Pickup delivery</p>
+								PickupDelivery pickupDelivery = (PickupDelivery)order.DeliveryOption;
+								<p>Pickup date: @pickupDelivery.PreferredTimeSlot.ToShortDateString()</p>
+								<p>Pickup time: @pickupDelivery.PreferredTimeSlot.ToShortTimeString()</p>
+								<p>Delivery location: @pickupDelivery.Location</p>
+							}
+						}
+					</div>
+				</div>
+			</a>
+		}
+	</div>
+</section>

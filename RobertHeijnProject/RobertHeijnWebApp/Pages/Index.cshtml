@@ -9,6 +9,10 @@
     {
         Response.WriteAsync(TempData["CheckOut"].ToString());
     }
+    @if (TempData["Registration"] != null)
+    {
+        Response.WriteAsync(TempData["Registration"].ToString());
+    }
     ViewData["Title"] = "Home page";
 }
 

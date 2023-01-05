@@ -156,7 +156,24 @@ namespace RhDalLibrary.DAL
 				}
 				else { throw new Exception("Database connection could not be opened."); }
 			}
-			//catch (SqlException ex) { throw new Exception(ex.Message); }
+			catch (Exception ex) { throw; }
+			finally { CloseConnection(); }
+		}
+		public bool CategoryNameCheck(string categoryname)
+		{
+			try
+			{
+				SqlParameter[] sp = new SqlParameter[] {
+					new SqlParameter("@categoryname", categoryname) };
+				if (OpenConnection())
+				{
+					SqlCommand cmd = CreateCommand("select count(*) from categoryTbl " +
+						"where CategoryName = @categoryname", sp);
+					return (int)cmd.ExecuteScalar() > 0;
+				}
+				else { throw new Exception("Database connection could not be opened."); }
+			}
+			catch(Exception ex) { throw; }
 			finally { CloseConnection(); }
 		}
 		public DataTable GetCategoryDataTable(string search)
@@ -175,7 +192,7 @@ namespace RhDalLibrary.DAL
 				}
 				else { throw new Exception("Database connection could not be opened."); }
 			}
-			catch (SqlException ex) { throw new Exception(ex.Message); }
+			catch (Exception ex) { throw; }
 			finally { CloseConnection(); }
 		}
 		//update
@@ -197,7 +214,7 @@ namespace RhDalLibrary.DAL
 				}
 				else { return false; }
 			}
-			catch (SqlException ex) { return false; }
+			catch (Exception ex) { throw; }
 			finally { CloseConnection(); }
 		}
 	}

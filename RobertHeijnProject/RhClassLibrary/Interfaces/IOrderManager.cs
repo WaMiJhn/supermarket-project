@@ -1,4 +1,5 @@
 ﻿using RhClassLibrary.Classes;
+using RhDalLibrary.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,6 +17,8 @@ namespace RhClassLibrary.Interfaces
 		public DataTable GetOrderDataTable(string search);
 		public Order FindOrder(int id);
 		public List<OrderStatus> GetAllOrderStatuses();
+		public Dictionary<int, int> GetItemsFromOrder(int orderid);
+		public List<Order> GetAllOrdersFromCustomer(int customerid);
 		public bool UpdateOrderStatus(Order order, OrderStatus orderStatus);
 	}
 }

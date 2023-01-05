@@ -160,7 +160,7 @@ namespace RobertHeijnDesktopApp
 		}
 		private void btnEmployees_Click(object sender, EventArgs e)
 		{
-			OpenChildForm(new EmployeeForm(), sender);
+			OpenChildForm(new EmployeeForm(new PersonManager(new PersonDAL())), sender);
 		}
 
 		private void btnMaximize_Click(object sender, EventArgs e)

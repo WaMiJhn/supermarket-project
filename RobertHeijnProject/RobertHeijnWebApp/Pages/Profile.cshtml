@@ -1,5 +1,81 @@
 ﻿@page
 @model RobertHeijnWebApp.Pages.ProfileModel
 @{
-	Layout = "_LoggedInLayout";
+	if (User.Identity.IsAuthenticated)
+	{
+		Layout = "_LoggedInLayout";
+	}
+}
+<form method="post" asp-page-handler="save">
+	<section id="profile">
+			<div class="myprofile">
+				<img src="https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg" />
+			</div>
+			<div class="details">
+				<div class="about">
+					<h2>About</h2>
+					<div class="data">
+						<div class="input">
+							<div>First name:</div>
+							<div class="userdata">@Model.LoggedIn.FirstName</div>
+						<div class="editdata">
+							<input asp-for="FirstName" type="text" value="@Model.LoggedIn.FirstName" required />
+								</div>
+						</div>
+						<div class="input">
+							<div>Last name:</div>
+						<div class="userdata">@Model.LoggedIn.LastName</div>
+						<div class="editdata">
+							<input asp-for="LastName" type="text" value="@Model.LoggedIn.LastName" required/>
+								</div>
+						</div>
+					</div>
+				</div>
+				<div class="address">
+					<h2>Address</h2>
+					<div>
+						<div class="input">
+							<div>Street:</div>
+							<div class="userdata">@Model.LoggedIn.Address.Street</div>
+							<span asp-validation-for="Street" class="editdata"></span>
+						<div class="editdata"><input asp-for="Street" type="text" value="@Model.LoggedIn.Address.Street" required /></div>
+						</div>
+						<div class="input">
+							<div>House number:</div>
+						<div class="userdata">@Model.LoggedIn.Address.Housenumber</div>
+							<span asp-validation-for="HouseNumber" class="editdata"></span>
+						<div class="editdata"><input asp-for="HouseNumber" type="text" value="@Model.LoggedIn.Address.Housenumber" title="Please submit a valid house number" pattern="^[1-9]\d*(?:[ -]?(?:[a-zA-Z]+|[1-9]\d*))?$" required /></div>
+						</div>
+						<div class="input">
+							<div>Zipcode:</div>
+						<div class="userdata">@Model.LoggedIn.Address.Zipcode</div>
+							<span asp-validation-for="Zipcode" class="editdata"></span>
+						<div class="editdata"><input asp-for="Zipcode" type="text" value="@Model.LoggedIn.Address.Zipcode" title="Please submit a valid zipcode" pattern="^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)([A-Z]{2}$|[a-z]{2}$)" required /></div>
+						</div>
+					</div>
+				</div>
+				<div class="account">
+					<h2>Account</h2>
+					<div>
+						<div class="input">
+							<div>Username:</div>
+						<div class="userdata">@Model.LoggedIn.Account.Username</div>
+							<div class="editdata"><input asp-for="Username" type="text" value="@Model.LoggedIn.Account.Username" required/></div>
+						</div>
+						<div class="input">
+							<div>Email:</div>
+							<div class="userdata">@Model.LoggedIn.Account.Email</div>
+						<div class="editdata"><input asp-for="Email" type="text" value="@Model.LoggedIn.Account.Email" title="Please submit a valid email" pattern="[a-z0-9]+&#64;[a-z]+\.[a-z]{2,3}" required /></div>
+						</div>
+					</div>
+				</div>
+				<div class="button">
+					<button type="button" id="editbtn">Edit information</button>
+					<button id="savebtn" type="submit">Save changes</button>
+				</div>
+			</div>
+	</section>
+</form>
+@section Scripts {
+	<script src="~/js/profileeditbutton.js"></script>
 }

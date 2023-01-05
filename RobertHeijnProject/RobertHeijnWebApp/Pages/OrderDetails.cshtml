@@ -1,0 +1,66 @@
+﻿@page
+@using RhClassLibrary.Classes;
+@model RobertHeijnWebApp.Pages.OrderDetailsModel
+@{
+	if (User.Identity.IsAuthenticated)
+	{
+		Layout = "_LoggedInLayout";
+	}
+}
+<section id="orderdetailspage">
+	<div class="header">
+		<h2>Order number: #@Model.OrderId</h2>
+	</div>
+	<div class="details">
+		<table>
+			<thead>
+				<tr>
+					<td>Image</td>
+					<td>Product</td>
+					<td>Price</td>
+					<td>Quantity</td>
+					<td>Subtotal</td>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach(KeyValuePair<int, int> pair in Model.OrderItems)
+				{
+					Item found = Model.ItemManager.FindItem(pair.Key);
+					<tr>
+						<td data-label="Image"><img src="@found.ImageSource" /></td>
+						<td data-label="Name">@found.Name</td>
+						<td data-label="Price">€@found.Price</td>
+						<td data-label="Quantity">@pair.Value</td>
+						@{
+							var Subtotal = found.Price * pair.Value;
+						}
+						<td data-label="Subtotal">@Subtotal</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</section>
+<section id="ordertotal">
+	<div id="total">
+		<h3>Order total:</h3>
+		<table>
+			<tr>
+				<td><strong>Total</strong></td>
+				<td><strong>
+						@{
+							decimal sum = 0; 
+							@if (Model.OrderItems != null)
+							{
+								foreach (KeyValuePair<int, int> value in Model.OrderItems)
+								{
+								sum += value.Value * Model.ItemManager.FindItem(value.Key).Price;
+								}	
+							}
+						}
+						€@sum
+				</strong></td>
+			</tr>
+		</table>
+	</div>
+</section>

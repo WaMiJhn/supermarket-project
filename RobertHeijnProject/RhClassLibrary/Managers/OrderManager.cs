@@ -41,6 +41,10 @@ namespace RhClassLibrary.Managers
 		{
 			try
 			{
+				if (orderDAL.GetCountHomeDelivery(deliverDateTime) >= 5)
+				{
+					throw new Exception("There have already been 5 orders placed on this timeslot, please select a different one.");
+				}
 				return orderDAL.CreateHomeDelivery(deliverDateTime);
 			}
 			catch (Exception ex) { throw; }
@@ -81,6 +85,25 @@ namespace RhClassLibrary.Managers
 				return orderStatuses;
 			}
 			catch (Exception ex) { throw; }
+		}
+		public Dictionary<int, int> GetItemsFromOrder(int orderid)
+		{
+			try
+			{
+				return orderDAL.GetItemsFromOrder(orderid);
+			}
+			catch (Exception ex) { throw; }
+		}
+		public List<Order> GetAllOrdersFromCustomer(int customerid)
+		{
+			List<Order> orders = new List<Order>();
+			List<OrderDTO> orderDTOs = orderDAL.GetAllHomeDeliveryOrdersFromCustomer(customerid).Concat(orderDAL.GetAllPickupDeliveryOrdersFromCustomer(customerid)).ToList();
+			foreach (var order in orderDTOs)
+			{
+				orders.Add(new Order(order));
+			}
+			return orders;
+
 		}
 		public bool UpdateOrderStatus(Order order, OrderStatus orderStatus)
 		{
